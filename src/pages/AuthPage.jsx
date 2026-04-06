@@ -1,8 +1,6 @@
 import { Button, Col, Image, Row, Modal, Form } from "react-bootstrap";
 import { useContext, useEffect, useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { useLocalStorage } from "usehooks-ts";
 import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { AuthContext } from "../components/AuthProvider";
 

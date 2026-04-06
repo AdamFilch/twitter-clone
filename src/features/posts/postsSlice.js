@@ -7,7 +7,7 @@ import {
   setDoc,
   updateDoc,
 } from "firebase/firestore";
-import { db, storage } from "../../firebase";
+import { db, storage } from "../../firebase.js";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
 
