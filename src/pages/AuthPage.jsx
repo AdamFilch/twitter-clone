@@ -3,7 +3,11 @@ import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useLocalStorage } from "usehooks-ts";
-import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  getAuth,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 import { AuthContext } from "../components/AuthProvider";
 
 export default function AuthPage() {
@@ -16,7 +20,7 @@ export default function AuthPage() {
   const [password, setPassword] = useState("");
 
   const auth = getAuth();
-  const {currentUser} = useContext(AuthContext);
+  const { currentUser } = useContext(AuthContext);
 
   const navigate = useNavigate();
 
@@ -38,11 +42,11 @@ export default function AuthPage() {
       console.error(error);
     }
   };
-  
+
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      await signInWithEmailAndPassword(auth, username, password)
+      await signInWithEmailAndPassword(auth, username, password);
     } catch (error) {
       console.error(error);
     }
@@ -66,6 +70,9 @@ export default function AuthPage() {
           Join Twitter today.
         </h2>
         <Col sm={5} className="d-grid gap-2">
+          <Button className="rounded-pill" variant="outline-dark">
+            <i className="bi bi-facebook"></i> Sign up with Facebook
+          </Button>
           <Button className="rounded-pill" variant="outline-dark">
             <i className="bi bi-google"></i> Sign up with Google
           </Button>
