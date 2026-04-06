@@ -1,18 +1,32 @@
 import { Button, Col, Image, Row } from "react-bootstrap";
 import PROFILE_IMG from "../assets/profile.jpg";
-import { useEffect, useState } from "react";
+import { useContext, useState } from "react";
+import { useDispatch } from "react-redux";
+import { AuthContext } from "./AuthProvider";
+import { likePost, removeLikePost } from "../features/posts/postsSlice";
+import UpdatePostModal from "./UpdatePostModal";
 
-export default function ProfilePostCard({ content, post_id }) {
-  const [likes, setLikes] = useState(0);
+export default function ProfilePostCard({ post }) {
+  const { content, id: postId, imageUrl } = post;
+  const [likes, setLikes] = useState(post.likes || []);
+  const dispatch = useDispatch();
+  const { currentUser } = useContext(AuthContext);
+  const userId = currentUser.uid;
+  const [showUpdatemodal, setShowUpdateModal] = useState(false);
 
-  useEffect(() => {
-    fetch(
-      `https://e7945ea0-aff2-46b2-83a6-9d226964b9a9-00-3u8ccvscbgxqb.janeway.replit.dev/likes/post/${post_id}`,
-    )
-      .then((response) => response.json())
-      .then((data) => setLikes(data.length))
-      .catch((error) => console.error(error));
-  });
+  const isLiked = likes.includes(userId);
+
+  const addToLike = () => {
+    setLikes([...likes, userId]);
+    dispatch(likePost({ userId, postId }));
+  };
+
+  const removeFromLike = () => {
+    setLikes(likes.filter((id) => id !== userId));
+    dispatch(removeLikePost({ userId, postId }));
+  };
+
+  const handleLike = () => (isLiked ? removeFromLike() : addToLike());
 
   return (
     <Row
@@ -29,6 +43,7 @@ export default function ProfilePostCard({ content, post_id }) {
         <strong>Adam</strong>
         <span>@adam.filchoir · Mar 26</span>
         <p>{content}</p>
+        <Image src={imageUrl} style={{ width: 150 }} />
         <div className="d-flex justify-content-between">
           <Button variant="light">
             <i className="bi bi-chat"></i>
@@ -36,8 +51,13 @@ export default function ProfilePostCard({ content, post_id }) {
           <Button variant="light">
             <i className="bi bi-repeat"></i>
           </Button>
-          <Button variant="light">
-            <i className="bi bi-heart">{likes}</i>
+          <Button variant="light" onClick={handleLike}>
+            {isLiked ? (
+              <i className="bi bi-heart text-danger"></i>
+            ) : (
+              <i className="bi bi-heart"></i>
+            )}
+            {likes.length}
           </Button>
           <Button variant="light">
             <i className="bi bi-graph-up"></i>
@@ -45,6 +65,18 @@ export default function ProfilePostCard({ content, post_id }) {
           <Button variant="light">
             <i className="bi bi-upload"></i>
           </Button>
+          <Button variant="light" onClick={() => setShowUpdateModal(true)}>
+            <i className="bi bi-pencil-square"></i>
+          </Button>
+          <Button variant="light">
+            <i className="bi bi-trash"></i>
+          </Button>
+          <UpdatePostModal
+            show={showUpdatemodal}
+            handleClose={() => setShowUpdateModal(false)}
+            postId={postId}
+            originalPostContent={content}
+          />
         </div>
       </Col>
     </Row>
